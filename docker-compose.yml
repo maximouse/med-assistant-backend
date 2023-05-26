@@ -1,0 +1,27 @@
+version: '4.19'
+
+services:
+  # main-services:
+  #   container_name: main-services
+  #   image: node:18.4.0
+  #   working_dir: /home/node/app
+  #   volumes:
+  #     - ./:/home/node/app
+  #   environment:
+  #     - NODENV=DEVELOPMENT
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 3000:3000
+  #   command: bash -c "npm run start:dev"
+
+  mongo:
+    hostname: mongo
+    image: mongo
+    container_name: localmongo
+    volumes:
+      - "./mongo-volume/db1:/data/db"
+    ports:
+      - "27017:27017"
+# networks:
+#   jaeger-tracing-network:
