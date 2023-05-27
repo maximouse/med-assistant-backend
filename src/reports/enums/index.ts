@@ -1,6 +1,6 @@
 export enum EReportStatus {
-    UPLOADED = 'загружен',
-    READY = 'готов'
+    PROCESSING = 'processing',
+    READY = 'ready'
 }
 
 export enum EMatch {

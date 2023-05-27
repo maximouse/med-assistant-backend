@@ -18,7 +18,27 @@ export class ReportsService {
         @InjectModel(Report.name) private ReportModel: Model<Report>,
     ){}
 
-    
+    async getAllReports(fileId){
+        let match 
+        if (fileId){
+            match = {
+                fileId
+            } 
+        } else {
+            match = {}
+        }
+        return await this.ReportModel.aggregate([
+            {
+                $match: match
+            },
+            {
+                $project: {
+                    fileId: "$fileId",
+                    status: "$status"
+                }
+            }
+        ])
+    }
     async getReport(params){
         let { protocols } = await this.ReportModel.findOne({fileId: params.fileId}).exec()
         if(!protocols) return null
@@ -34,7 +54,7 @@ export class ReportsService {
             const fromReference = reference.find( r => r.codes.includes(protocol.code)).appointments.filter( a => a.mandatory.trim() == 'да' )
             const report = []
             let { appointments } = protocol
-            for (let {appointment} of fromReference){
+            for (let { appointment } of fromReference){
 
                 if(!appointments.length) continue;
 
@@ -58,7 +78,7 @@ export class ReportsService {
         return { reports }
     }
 
-    matchAppointment(fromReference, fromProtocol):ICandidate{
+    private matchAppointment(fromReference, fromProtocol):ICandidate{
         console.log(fromReference)
         let candidate:ICandidate
 
@@ -79,12 +99,12 @@ export class ReportsService {
 
             if((a1 > .2 && a2 > .6) || (a2 > .2 && a1 > .6)){
                 const max = a1 > a2 ? a1 : a2
-                // const min = a2 < a1 ? a2 : a1
+                const min = a2 < a1 ? a2 : a1
                 candidate = {
                     reference: fromReference,
                     protocol: appointment,
                     match: EMatch.PRETTY_CLOSE,
-                    score: max
+                    score: max - min
                 }
                 continue
             }
@@ -112,8 +132,8 @@ export class ReportsService {
             score: 0
         }
     }
-    getTotalScore(reference, protocol):number{
-        return (reference / protocol) * 100
+    private getTotalScore(reference, protocol): string | number{
+        return (protocol / reference)//`${((protocol / reference) * 100).toFixed(0)}%`
     }
     fuzz({a1, a2}){
         

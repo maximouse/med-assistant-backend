@@ -43,8 +43,8 @@ export class Report {
     @Prop({required: true})
     fileName: string;
 
-    @Prop({required: true, ref: "ReportStatus"})
-    status: mongoose.Types.ObjectId;
+    @Prop({required: true})
+    status: string;
 
     @Prop({type: [ProtocolSchema]})
     protocols: Array<Protocol>;

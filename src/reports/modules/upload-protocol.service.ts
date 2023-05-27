@@ -7,26 +7,9 @@ import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { Report } from 'src/reports/schemas/report.schema';
 import { ReportStatus } from '../schemas/reportStatus.schema';
+import { EReportStatus } from '../enums';
 const { newLinesToArray } = require('../../helpers')
-const { EReportStatus } = require('../enums')
-
-interface IResponse  {
-    fileId: string;
-    filters: {
-        diagnosis: string[] | null;
-        doctors: string[] | null;
-        dates: string[] | null;
-        codes: string[] | null;
-    };
-}
-
-interface IReport {
-    fileId: string;
-    fileName: string;
-    status: mongoose.Types.ObjectId;
-    protocols: Array<any>;
-}
-
+import { IReport, IResponse } from '../interfaces'
 @Injectable()
 export class UploadProtocolService {
     @Inject(ExcelService)
@@ -35,7 +18,7 @@ export class UploadProtocolService {
         @InjectModel(Diagnosis.name) private DiagnosisModel: Model<Diagnosis>,
         @InjectModel(Orientation.name) private OrientationModel: Model<Orientation>,
         @InjectModel(AppointmentsTypes.name) private AppointmentsModel: Model<AppointmentsTypes>,
-        @InjectModel(Report.name) private Report: Model<Report>,
+        @InjectModel(Report.name) private ReportModel: Model<Report>,
         @InjectModel(ReportStatus.name) private ReportStatus: Model<ReportStatus>,
     ){}
 
@@ -46,18 +29,20 @@ export class UploadProtocolService {
         const codes: Set<string> = new Set
 
         let codesBase = await this.getDiagnosisCodes()
-        let reportStatus = await this.getReportStatus()
-
         codesBase = [...codesBase[0].res]
-        const report: IReport = {
+
+        let report: IReport = {
             fileId: file.filename,
             fileName: file.originalname,
-            status: reportStatus._id,
+            status: EReportStatus.PROCESSING,
             protocols: []
         }
-        console.log(reportStatus, report)
+
+        const savedReport = await this.ReportModel.create(report);
+
         let diagnosis, date, patientId, gender, birthday, doctor, appointments, code
         const worksheet = await this.ExcelService.getWorkSheet(file.path);
+
         await worksheet.eachRow({includeEmpty: false}, (row, rowNumber) => {
             code = this.ExcelService.getVal("D", rowNumber)
             
@@ -88,11 +73,16 @@ export class UploadProtocolService {
             }
         });
 
-        await this.Report.insertMany(report);
-        return this.getResponse(file.filename, doctors, diagnosises, dates, codes)
+        this.ReportModel.updateOne({ _id: savedReport._id},
+        {
+            protocols: report.protocols,
+            status: EReportStatus.READY
+        })
+        
+        return  { fileId: report.fileId, status: report.status}//this.getResponse(file.filename, doctors, diagnosises, dates, codes)
     }
 
-    getResponse(fileId, doctors, diagnosis, dates, codes){
+    getResponse(fileId, doctors, diagnosis, dates, codes): IResponse{
         const response: IResponse = {
             fileId: fileId,
             filters: {
@@ -131,9 +121,5 @@ export class UploadProtocolService {
         ])
     }
 
-    async getReportStatus():Promise<any>{
-        return await this.ReportStatus.findOne({title: EReportStatus.UPLOADED})
-    }
-    
 }
 

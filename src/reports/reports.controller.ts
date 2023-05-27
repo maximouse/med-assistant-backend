@@ -12,6 +12,11 @@ export class ReportsController {
         private readonly UploadProtocolService: UploadProtocolService
     ){}
     
+    @Get()
+    getAllReports(@Body() { fileId } : { fileId } ){
+        return this.ReportsService.getAllReports(fileId)
+    }
+
     @Post('getreport')
     @UseInterceptors(NotFoundInterceptor)
     getReport(@Body() CreateReportDto: CreateReportDto){
