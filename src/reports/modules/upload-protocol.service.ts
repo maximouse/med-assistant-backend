@@ -6,7 +6,7 @@ import { AppointmentsTypes } from 'src/sppvr/schemas/appointmentsTypes.schema';
 import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { Report } from 'src/reports/schemas/report.schema';
-import { ReportStatus } from '../schemas/reportStatus.schema';
+
 import { EReportStatus } from '../enums';
 const { newLinesToArray } = require('../../helpers')
 import { IReport, IResponse } from '../interfaces'
@@ -19,7 +19,7 @@ export class UploadProtocolService {
         @InjectModel(Orientation.name) private OrientationModel: Model<Orientation>,
         @InjectModel(AppointmentsTypes.name) private AppointmentsModel: Model<AppointmentsTypes>,
         @InjectModel(Report.name) private ReportModel: Model<Report>,
-        @InjectModel(ReportStatus.name) private ReportStatus: Model<ReportStatus>,
+
     ){}
 
     async upload(file: any) {

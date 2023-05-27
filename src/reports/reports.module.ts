@@ -9,7 +9,8 @@ import { AppointmentsTypes, AppointmentsTypesSchema } from 'src/sppvr/schemas/ap
 import { ExcelModule } from 'src/excel';
 import { UploadProtocolService } from './modules/upload-protocol.service';
 import { Report, ReportSchema } from 'src/reports/schemas/report.schema';
-import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStatus.schema';
+// import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStatus.schema';
+import { Keywords, KeywordsSchema } from 'src/sppvr/schemas/keywords.schema';
 
 @Module({
     imports: [
@@ -21,8 +22,8 @@ import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStat
             {name: Orientation.name, schema: OrientationSchema},
             {name: AppointmentsTypes.name, schema: AppointmentsTypesSchema},
             {name: Report.name, schema: ReportSchema},
-            {name: ReportStatus.name, schema: ReportStatusSchema},
-            
+            // {name: ReportStatus.name, schema: ReportStatusSchema},
+            {name: Keywords.name, schema: KeywordsSchema},
           ]),
         ExcelModule,
       ],
