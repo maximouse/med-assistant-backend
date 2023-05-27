@@ -48,14 +48,14 @@ export class ParserService {
                 }
 
                 if(typeof Number(val) == 'number' && !isNaN(Number(val)) && val !== 'undefined' && val !== null && val !== ""){
-                    let title = this.xls.getVal("B" , rowNumber)
-                    let appointmentType = this.xls.getVal("C" , rowNumber);
+                    let type = this.xls.getVal("B" , rowNumber).trim() || "н/д"
+                    let appointmentTitle = this.xls.getVal("C" , rowNumber);
                     let mandatory = this.xls.getVal("D" , rowNumber)
-                    let appointment = appointmentsTypes.find(at => at.title === title)?._id || null
+                    // let appointment = appointmentsTypes.find(at => at.title === title)?._id || null
                     appointments.push({
                         number: Number(val),
-                        type: appointment,
-                        appointment: appointmentType.trim(),
+                        type: type,
+                        appointment: appointmentTitle,
                         mandatory: mandatory.trim()
                     })
                 }

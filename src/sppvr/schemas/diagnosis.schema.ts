@@ -7,11 +7,11 @@ export type DiagnosisDocument = HydratedDocument<Diagnosis>;
 @Schema({_id: false})
 export class Appointment {
 
-    @Prop({required: true})
+    @Prop()
     number: number;
 
-    @Prop({required: true, ref: "AppointmentsTypes"})
-    type: mongoose.Types.ObjectId
+    @Prop()
+    type: string
 
     @Prop()
     appointment: string;
