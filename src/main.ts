@@ -7,10 +7,9 @@ console.log(process.env.MONGODB)
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ["https://med-assistant-frontend-production.up.railway.app", "localhost"],
-    preflightContinue: false,
-    allowedHeaders: 'Access-Control-Allow-Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
-    optionsSuccessStatus: 204
+    origin: ["http://localhost:3000", "https://med-assistant-frontend-production.up.railway.app"],
+    credentials: true,
+    allowedHeaders:['content-type']
   });
   const config = new DocumentBuilder()
   .setTitle('Электронный помощник руководителя (Backend)')
