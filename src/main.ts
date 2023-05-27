@@ -8,7 +8,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: ["https://med-assistant-frontend-production.up.railway.app", "localhost"],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
     allowedHeaders: 'Access-Control-Allow-Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
     optionsSuccessStatus: 204
