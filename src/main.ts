@@ -7,7 +7,7 @@ console.log(process.env.MONGODB)
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    "origin": "*",
+    "origin": ["https://med-assistant-frontend-production.up.railway.app", "localhost"],
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204
