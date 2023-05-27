@@ -35,7 +35,8 @@ export class UploadProtocolService {
             fileId: file.filename,
             fileName: file.originalname,
             status: EReportStatus.PROCESSING,
-            protocols: []
+            protocols: [],
+            filters: {}
         }
 
         const savedReport = await this.ReportModel.create(report);
@@ -73,26 +74,34 @@ export class UploadProtocolService {
             }
         });
         report.status = EReportStatus.READY
+        report.filters = this.getFilters(doctors, diagnosises, dates, codes)
         this.updateReport({ _id: savedReport._id}, report)
 
-        return  { fileId: report.fileId, status: report.status}//this.getResponse(file.filename, doctors, diagnosises, dates, codes)
+        return  { fileId: report.fileId, status: report.status }
     }
     private async updateReport( _id, update){
         return await this.ReportModel.updateOne({ _id: _id}, update)
     }
-    private getResponse(fileId, doctors, diagnosis, dates, codes): IResponse{
-        const response: IResponse = {
-            fileId: fileId,
-            filters: {
-                diagnosis: diagnosis.size ? [...diagnosis] : null,
-                doctors: doctors.size ? [...doctors] : null,
-                dates: dates.size ? [...dates] : null,
-                codes: codes.size ? [...codes] : null
-            }
+    // private getResponse(fileId, doctors, diagnosis, dates, codes): IResponse{
+    //     const response: IResponse = {
+    //         fileId: fileId,
+    //         filters: {
+    //             diagnosis: diagnosis.size ? [...diagnosis] : null,
+    //             doctors: doctors.size ? [...doctors] : null,
+    //             dates: dates.size ? [...dates] : null,
+    //             codes: codes.size ? [...codes] : null
+    //         }
+    //     }
+    //     return response
+    // }
+    private getFilters(diagnosis, doctors, dates, codes):Object{
+        return {
+            diagnosis: diagnosis.size ? [...diagnosis] : null,
+            doctors: doctors.size ? [...doctors] : null,
+            dates: dates.size ? [...dates] : null,
+            codes: codes.size ? [...codes] : null
         }
-        return response
     }
-
     async getDiagnosisCodes():Promise<Array<any>>{
         return await this.DiagnosisModel.aggregate([
             {

@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose'
-import { AppointmentsTypes } from 'src/sppvr/schemas/appointmentsTypes.schema';
+
 import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { Report } from './schemas/report.schema';
 import { ICandidate } from './interfaces';
 import { EMatch } from './enums';
-const { fuzzy, search } = require('fast-fuzzy');
+const { fuzzy } = require('fast-fuzzy');
 const { newLinesToString, newLinesToArray } = require('../helpers')
 @Injectable()
 export class ReportsService {
     constructor(
         @InjectModel(Diagnosis.name) private DiagnosisModel: Model<Diagnosis>,
         @InjectModel(Orientation.name) private OrientationModel: Model<Orientation>,
-        @InjectModel(AppointmentsTypes.name) private AppointmentsModel: Model<AppointmentsTypes>,
         @InjectModel(Report.name) private ReportModel: Model<Report>,
     ){}
 
@@ -38,6 +37,7 @@ export class ReportsService {
                     fileId: "$fileId",
                     fileName: "$fileName",
                     status: "$status",
+                    filters: "$filters",
                     created_at: "$created_at"
                 }
             }
@@ -47,7 +47,7 @@ export class ReportsService {
         let { protocols } = await this.ReportModel.findOne({fileId: params.fileId}).exec()
         if(!protocols) return null
         //protocols = protocols.filter(p => p.patientId == params.patientId)
-        const reference = await this.DiagnosisModel.find({codes: { $in: [...params.codes]}}).populate("appointments.type").exec()
+        const reference = await this.DiagnosisModel.find({codes: { $in: [...params.codes]}}).exec()
         // protocols = protocols.filter( r => r.code == params.code && 
         //                                                  r.patientId == params.patientId && 
         //                                                  r.diagnosis == params.diagnosis)
