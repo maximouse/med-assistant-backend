@@ -34,7 +34,9 @@ export class ReportsService {
             {
                 $project: {
                     fileId: "$fileId",
-                    status: "$status"
+                    fileName: "$fileName",
+                    status: "$status",
+                    created_at: "$created_at"
                 }
             }
         ])

@@ -72,17 +72,15 @@ export class UploadProtocolService {
                 })
             }
         });
+        report.status = EReportStatus.READY
+        this.updateReport({ _id: savedReport._id}, report)
 
-        this.ReportModel.updateOne({ _id: savedReport._id},
-        {
-            protocols: report.protocols,
-            status: EReportStatus.READY
-        })
-        
         return  { fileId: report.fileId, status: report.status}//this.getResponse(file.filename, doctors, diagnosises, dates, codes)
     }
-
-    getResponse(fileId, doctors, diagnosis, dates, codes): IResponse{
+    private async updateReport( _id, update){
+        return await this.ReportModel.updateOne({ _id: _id}, update)
+    }
+    private getResponse(fileId, doctors, diagnosis, dates, codes): IResponse{
         const response: IResponse = {
             fileId: fileId,
             filters: {

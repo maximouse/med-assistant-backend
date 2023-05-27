@@ -19,6 +19,8 @@ pids
 # Database
 mongo-volume
 
+#FILES
+files/
 #Docker
 docker-compose.yml
 Dockerfile
