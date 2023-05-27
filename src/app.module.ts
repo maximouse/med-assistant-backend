@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 
 import { UsersModule } from './users/users.module';
-// import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { ReportsModule } from './reports/reports.module';
 import { ParserModule } from './sppvr/parser.module';
 
@@ -12,7 +12,7 @@ import { ParserModule } from './sppvr/parser.module';
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB),
     UsersModule,
-    // AuthModule,
+    AuthModule,
     ReportsModule,
     ParserModule
   ],

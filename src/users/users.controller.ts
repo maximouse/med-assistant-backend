@@ -13,32 +13,32 @@ export class UsersController {
     return this.UserService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    console.log("users")
-    return this.UserService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   console.log("users")
+  //   return this.UserService.findAll();
+  // }
 
-  @Get(':id')
-  @UseInterceptors(NotFoundInterceptor)
-  findOne(@Param('id') id: string) {
-      return this.UserService.findOne(id);
-  }
+  // @Get(':id')
+  // @UseInterceptors(NotFoundInterceptor)
+  // findOne(@Param('id') id: string) {
+  //     return this.UserService.findOne(id);
+  // }
 
-  @Post('/findby/:name/:age')
-  findBy(@Param('name') name: string, @Param('age') age: string) {
-    console.log("fnd")
-    console.log({name, age})
-    return this.UserService.findBy({name, age});
-  }
+  // @Post('/findby/:name/:age')
+  // findBy(@Param('name') name: string, @Param('age') age: string) {
+  //   console.log("fnd")
+  //   console.log({name, age})
+  //   return this.UserService.findBy({name, age});
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateuserDto: UpdateUserDto) {
-    return this.UserService.update(id, updateuserDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateuserDto: UpdateUserDto) {
+  //   return this.UserService.update(id, updateuserDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.UserService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.UserService.remove(id);
+  // }
 }

@@ -33,6 +33,8 @@ export class ReportsService {
             },
             {
                 $project: {
+                    
+                    _id: 0,
                     fileId: "$fileId",
                     fileName: "$fileName",
                     status: "$status",

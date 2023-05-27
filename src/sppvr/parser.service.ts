@@ -6,6 +6,7 @@ import { AppointmentsTypes } from 'src/sppvr/schemas/appointmentsTypes.schema';
 import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { newLinesToArray } from '@helpers/index';
+import { Keywords } from './schemas/keywords.schema';
 @Injectable()
 export class ParserService {
     @Inject(ExcelService)
@@ -14,6 +15,7 @@ export class ParserService {
         @InjectModel(Diagnosis.name) private DiagnosisModel: Model<Diagnosis>,
         @InjectModel(Orientation.name) private OrientationModel: Model<Orientation>,
         @InjectModel(AppointmentsTypes.name) private AppointmentsModel: Model<AppointmentsTypes>,
+        @InjectModel(Keywords.name) private KeywordsModel: Model<Keywords>,
        
     ){}
     
@@ -75,6 +77,12 @@ export class ParserService {
         } catch (error){
                 throw new Error(error)
             }
+    }
+
+    async addKeywords({title, keywords}){
+        return await this.KeywordsModel.create({
+            title, keywords
+        })
     }
 
 }
