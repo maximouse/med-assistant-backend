@@ -5,9 +5,7 @@ const Excel = require('exceljs')
 export class ExcelService {
   private readonly workbook = new Excel.Workbook();
   private worksheet;
-  // getWorksheet(){
-  //   if(this.worksheet) return this.worksheet;
-  // }
+
   getVal(letter: string, rowNumber: number){
     return this.worksheet.getCell(`${letter}${rowNumber}`).value;
   }
