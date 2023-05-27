@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -10,7 +10,16 @@ import { ParserModule } from './sppvr/parser.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGODB),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async () => {
+        return {
+          uri: process.env.MONGODB,
+          dbName: 'med',
+        };
+      },
+    }),
     UsersModule,
     AuthModule,
     ReportsModule,
