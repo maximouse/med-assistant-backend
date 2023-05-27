@@ -3,6 +3,7 @@ version: '4.19'
 services:
   main-services:
     container_name: main-services
+    hostname: srv
     image: node:18.4.0
     working_dir: /home/node/app
     volumes:
@@ -13,7 +14,7 @@ services:
       - .env
     ports:
       - 3000:3000
-    command: npm run start:dev
+    command: bash npm run start:dev
 
   mongo:
     hostname: mongo

@@ -35,7 +35,7 @@ export class Protocol {
 export const ProtocolSchema = SchemaFactory.createForClass(Protocol);
 
 // MAIN //
-@Schema()
+@Schema({timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }})
 export class Report {
     @Prop({required: true})
     fileId: mongoose.Types.ObjectId;
@@ -43,8 +43,8 @@ export class Report {
     @Prop({required: true})
     fileName: string;
 
-    @Prop({required: true, ref: "ReportStatus"})
-    status: mongoose.Types.ObjectId;
+    @Prop({required: true})
+    status: string;
 
     @Prop({type: [ProtocolSchema]})
     protocols: Array<Protocol>;

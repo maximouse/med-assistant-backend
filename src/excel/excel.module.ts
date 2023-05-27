@@ -8,6 +8,4 @@ import { ExcelService } from './excel.service';
     exports: [ExcelService]
 })
 
-export class ExcelModule {
-  
-}
+export class ExcelModule {}

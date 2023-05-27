@@ -10,6 +10,7 @@ import { ExcelModule } from 'src/excel';
 import { UploadProtocolService } from './modules/upload-protocol.service';
 import { Report, ReportSchema } from 'src/reports/schemas/report.schema';
 import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStatus.schema';
+
 @Module({
     imports: [
         MulterModule.register({
@@ -20,8 +21,9 @@ import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStat
             {name: Orientation.name, schema: OrientationSchema},
             {name: AppointmentsTypes.name, schema: AppointmentsTypesSchema},
             {name: Report.name, schema: ReportSchema},
-            {name: ReportStatus.name, schema: ReportStatusSchema  },
-        ]),
+            {name: ReportStatus.name, schema: ReportStatusSchema},
+            
+          ]),
         ExcelModule,
       ],
       controllers: [ReportsController],

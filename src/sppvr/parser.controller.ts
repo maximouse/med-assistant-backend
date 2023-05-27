@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ParserService } from './parser.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -11,9 +11,9 @@ export class ParserController {
     uploadFile(@UploadedFile() file: Express.Multer.File) {
         return this.ParserService.parse(file)
     }
-    // @Post('test')
-    // test(){
-    //     return this.ParserService.test()
-    // }
+    @Post('keywords')
+    addKeywords(@Body() params : {title, keywords}){
+        return this.ParserService.addKeywords(params)
+    }
 }
 

@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Diagnosis, DiagnosisSchema } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation, OrientationSchema } from 'src/sppvr/schemas/orientation.schema';
 import { AppointmentsTypes, AppointmentsTypesSchema } from 'src/sppvr/schemas/appointmentsTypes.schema';
+import { Keywords, KeywordsSchema } from 'src/sppvr/schemas/keywords.schema';
 import { ExcelModule } from 'src/excel';
 
 @Module({
@@ -17,7 +18,8 @@ import { ExcelModule } from 'src/excel';
             {name: Diagnosis.name, schema: DiagnosisSchema},
             {name: Orientation.name, schema: OrientationSchema},
             {name: AppointmentsTypes.name, schema: AppointmentsTypesSchema},
-            {name: AppointmentsTypes.name, schema: AppointmentsTypesSchema}
+            {name: AppointmentsTypes.name, schema: AppointmentsTypesSchema},
+            {name: Keywords.name, schema: KeywordsSchema}
         ]),
         ExcelModule
       ],
