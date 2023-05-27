@@ -6,7 +6,7 @@ import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { Report } from './schemas/report.schema';
 import { ICandidate } from './interfaces';
-import { EMatch } from './enums';
+import { EAppointmentsTypes, EMatch } from './enums';
 const { fuzzy } = require('fast-fuzzy');
 const { newLinesToString, newLinesToArray } = require('../helpers')
 @Injectable()
@@ -47,7 +47,8 @@ export class ReportsService {
         let { protocols } = await this.ReportModel.findOne({fileId: params.fileId}).exec()
         if(!protocols) return null
         //protocols = protocols.filter(p => p.patientId == params.patientId)
-        const reference = await this.DiagnosisModel.find({codes: { $in: [...params.codes]}}).exec()
+        let reference = await this.DiagnosisModel.find({codes: { $in: [...params.codes]}}).exec()
+
         // protocols = protocols.filter( r => r.code == params.code && 
         //                                                  r.patientId == params.patientId && 
         //                                                  r.diagnosis == params.diagnosis)
@@ -55,7 +56,7 @@ export class ReportsService {
         const reports = []
         
         protocols.forEach( (protocol) =>{
-            const fromReference = reference.find( r => r.codes.includes(protocol.code)).appointments.filter( a => a.mandatory.trim() == 'да' )
+            const fromReference = reference.find( r => r.codes.includes(protocol.code)).appointments.filter( a => a.mandatory.trim() == 'да' && a.type !== EAppointmentsTypes.CONSULTING && a.type !== "Консультации")
             const report = []
             let { appointments } = protocol
             for (let { appointment } of fromReference){

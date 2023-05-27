@@ -49,8 +49,8 @@ export class Report {
     @Prop({type: [ProtocolSchema]})
     protocols: Array<Protocol>;
 
-    @Prop({type: Object})
-    filters: Object;
+    @Prop()
+    filters: Array<any>;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

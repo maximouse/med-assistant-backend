@@ -10,7 +10,7 @@ export interface IReport {
     fileName: string,
     status: string,
     protocols: Array<any>,
-    filters: Object
+    filters: Array<any>
 }
 export interface IResponse  {
     fileId: string;
