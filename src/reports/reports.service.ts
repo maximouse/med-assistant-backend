@@ -50,7 +50,7 @@ export class ReportsService {
     async getReport(params){
         const reports = []
         const filters = this.getFilters(params)
-        
+
         await this.setKeywords()
  
         let  report  = await this.ReportModel.aggregate([
@@ -101,6 +101,7 @@ export class ReportsService {
 
         return { reports }
     }
+    
     private hasKeywords(fromReference, fromProtocol){
         const { keywords } = this.keywords.find( k => k.title === fromReference) || {};
         if (!keywords) return null;
@@ -147,7 +148,7 @@ export class ReportsService {
                 }
                 continue
             }
-            
+    
         }
 
         if (candidate){
@@ -175,6 +176,7 @@ export class ReportsService {
         }
         return filters
     }
+
     private async setKeywords(){
         this.keywords = await this.KeywordsModel.find().exec()
     }

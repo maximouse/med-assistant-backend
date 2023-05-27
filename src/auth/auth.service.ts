@@ -18,12 +18,12 @@ export class AuthService {
         return this.generateToken(user)
     }
 
-    async registration(userDto: CreateUserDto) {
+    // async registration(userDto: CreateUserDto) {
 
-        const hashPassword = await bcrypt.hash(userDto.password, 5);
-        const user = await this.userService.create({...userDto, password: hashPassword})
-        return this.generateToken(user)
-    }
+    //     const hashPassword = await bcrypt.hash(userDto.password, 5);
+    //     const user = await this.userService.create({...userDto, password: hashPassword})
+    //     return this.generateToken(user)
+    // }
 
     private async generateToken(user: User) {
         const payload = {email: user.email, id: user.id}

@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ReportsModule } from './reports/reports.module';
 import { ParserModule } from './sppvr/parser.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { ParserModule } from './sppvr/parser.module';
     UsersModule,
     AuthModule,
     ReportsModule,
-    ParserModule
+    ParserModule,
   ],
   controllers: [],
   providers: [],

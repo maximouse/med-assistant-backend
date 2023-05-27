@@ -11,6 +11,7 @@ import { UploadProtocolService } from './modules/upload-protocol.service';
 import { Report, ReportSchema } from 'src/reports/schemas/report.schema';
 // import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStatus.schema';
 import { Keywords, KeywordsSchema } from 'src/sppvr/schemas/keywords.schema';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { Keywords, KeywordsSchema } from 'src/sppvr/schemas/keywords.schema';
             {name: Keywords.name, schema: KeywordsSchema},
           ]),
         ExcelModule,
+        AuthModule
       ],
       controllers: [ReportsController],
       providers: [ReportsService, UploadProtocolService],

@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { NotFoundInterceptor } from '../interceptoprs/notfound.interceptor';
 @Controller('users')
 export class UsersController {
   constructor(private readonly UserService: UserService) {}
