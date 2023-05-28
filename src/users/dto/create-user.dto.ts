@@ -14,7 +14,7 @@ export class CreateUserDto {
     readonly password: string;
 
     @ApiProperty({example: '111', description: 'ID'})
-    @IsString({message: 'Должно быть числом'})
+    @IsString({message: 'Должно быть строкой'})
     readonly id: number;
 
     @ApiProperty({example: 'Иван', description: 'Имя'})

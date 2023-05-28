@@ -51,6 +51,7 @@ export class Report {
 
     @Prop()
     filters: Array<any>;
+
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

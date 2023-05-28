@@ -1,7 +1,8 @@
 import {Body, Controller, Post} from '@nestjs/common';
-import {ApiTags} from "@nestjs/swagger";
-import {CreateUserDto} from "../users/dto/create-user.dto";
+import {ApiOkResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
+import {CreateAuthDto} from "./dto/create-auth.dto";
 import {AuthService} from "./auth.service";
+import { IAuthResponse } from './responses';
 
 @ApiTags('Авторизация')
 @Controller('auth')
@@ -10,7 +11,9 @@ export class AuthController {
     constructor(private authService: AuthService) {}
 
     @Post('/login')
-    login(@Body() userDto: CreateUserDto) {
-        return this.authService.login(userDto)
+    @ApiOperation({summary: "Получить отчет"})
+    @ApiOkResponse({type: IAuthResponse})
+    login(@Body() authDto: CreateAuthDto):Promise<IAuthResponse> {
+        return this.authService.login(authDto)
     }
 }

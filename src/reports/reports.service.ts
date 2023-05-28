@@ -5,7 +5,8 @@ import { Model } from 'mongoose'
 import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { Report } from './schemas/report.schema';
-import { ICandidate } from './interfaces';
+import { IAllReportsResponse,  IReportResponse } from './responses';
+import { ICandidate } from './interfaces'
 import { EAppointmentsTypes, EMatch } from './enums';
 import { Keywords } from 'src/sppvr/schemas/keywords.schema';
 const { fuzzy } = require('fast-fuzzy');
@@ -22,18 +23,8 @@ export class ReportsService {
 
     private keywords:Array<any> = []
 
-    async getAllReports(fileId):Promise<Array<any>> | null{
-        let match 
-        if (fileId){
-            match = {
-                fileId
-            } 
-        } else {
-            match = {}
-        }
-
+    async getAllReports():Promise<IAllReportsResponse[]> | null{
         return await this.ReportModel.aggregate([
-            { $match: match },
             {
                 $project: {
                     _id: 0,
@@ -47,35 +38,25 @@ export class ReportsService {
         ])
     }
 
-    async getReport(params){
+    async getReport(params):Promise<IReportResponse[]>{
         const reports = []
         const filters = this.getFilters(params)
 
         await this.setKeywords()
  
-        let  report  = await this.ReportModel.aggregate([
-            { $match : { fileId: params.fileId}},
-            { $project: {
-                "protocols": {
-                    $filter: {
-                        input: "$protocols",
-                        as: "protocol",
-                        cond: {
-                            $and: [...filters]
-                        }
-                    }
-                }
-                
-            }}
-        ])
-        let { protocols } = report[0]
+        let { protocols } = await this.getReportDocument(params.fileId, filters)
 
-        if(!protocols) return null;
+        if(!protocols) {
+            return null;
+        }
 
-        let reference = await this.DiagnosisModel.find({codes: { $in: [...params.filters.code]}}).exec()
-                      
+        // let reference = await this.DiagnosisModel.find({codes: { $in: [...params.filters.code]}}).exec()
+        let reference = await this.getReferenceDocument(params.filters.code)
+        if(!protocols.length) {
+            return null;
+        }
         protocols.forEach( (protocol) =>{
-            const fromReference = reference.find( r => r.codes.includes(protocol.code)).appointments.filter( a => a.mandatory.trim() == 'да' && a.type !== EAppointmentsTypes.CONSULTING && a.type !== "Консультации")
+            const fromReference = reference.find( r => r.codes.includes(protocol.code)).appointments.filter( a => a.mandatory.trim() == 'да' && a.type !== EAppointmentsTypes.CONSULTING && a.type !== "Консультации") || []
             const report = []
 
             let { appointments } = protocol
@@ -99,7 +80,7 @@ export class ReportsService {
             reports.push({patient: protocol.patientId, doctor: protocol.doctor, code: protocol.code, report, references: allReferences, appointments, total})
         })
 
-        return { reports }
+        return reports 
     }
     
     private hasKeywords(fromReference, fromProtocol){
@@ -148,7 +129,7 @@ export class ReportsService {
                 }
                 continue
             }
-    
+
         }
 
         if (candidate){
@@ -178,9 +159,36 @@ export class ReportsService {
     }
 
     private async setKeywords(){
+        this.keywords = []
         this.keywords = await this.KeywordsModel.find().exec()
     }
 
+    private async getReportDocument(fileId, filters){
+        const report = await this.ReportModel.aggregate([
+            { $match : { fileId: fileId}},
+            { $project: {
+                "protocols": {
+                    $filter: {
+                        input: "$protocols",
+                        as: "protocol",
+                        cond: {
+                            $and: [...filters]
+                        }
+                    }
+                }
+                
+            }}
+        ])
+        return report[0] || {}
+    }
+    private async getReferenceDocument(code){
+        let filter = {}
+        if (code.length){
+            filter = { codes: { $in: [...code]} }
+        }
+        const reference = await this.DiagnosisModel.find(filter).exec()
+        return reference || []
+    }
     fuzz({a1, a2}){
         
         return {

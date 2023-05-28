@@ -5,37 +5,43 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { UploadProtocolService } from './modules/upload-protocol.service';
 import { NotFoundInterceptor } from 'src/interceptoprs/notfound.interceptor';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { IAllReportsResponse, IReportResponse, IUploadProtocolResponse } from './responses';
 
 @ApiTags('Отчеты')
-@Controller('reports')
+@Controller('v1')
 export class ReportsController {
     constructor(
         private readonly ReportsService: ReportsService,
         private readonly UploadProtocolService: UploadProtocolService
     ){}
     
-    
-    @Get()
+    @Get('report')
     @ApiOperation({summary: "Получить список всех загруженных протоколов и доступные для них фильтры"})
-    @ApiResponse({status: 201})
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(NotFoundInterceptor)
-    getAllReports(@Body() { fileId } : { fileId } ){
-        return this.ReportsService.getAllReports(fileId)
+    @ApiOkResponse({type: IAllReportsResponse})
+    getAllReports():Promise<IAllReportsResponse[]> | null{
+        return this.ReportsService.getAllReports()
     }
 
+    
+    @Post('report')
+    @ApiOperation({summary: "Получить отчет"})
+    @ApiOkResponse({type: IReportResponse})
     @UseGuards(JwtAuthGuard)
-    @Post('getreport')
     @UseInterceptors(NotFoundInterceptor)
-    getReport(@Body() CreateReportDto: CreateReportDto){
+    getReport(@Body() CreateReportDto: CreateReportDto):Promise<IReportResponse[]>{
         return this.ReportsService.getReport(CreateReportDto);
     }
     
-    @UseGuards(JwtAuthGuard)
+    
     @Post('protocol')
+    @ApiOperation({summary: "Загрузить протокол"})
+    @ApiOkResponse({type: IUploadProtocolResponse})
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
-    uploadFile(@UploadedFile() file: Express.Multer.File): Promise<any> {
+    uploadFile(@UploadedFile() file: Express.Multer.File): Promise<IUploadProtocolResponse> {
         return this.UploadProtocolService.upload(file);
     }
 
