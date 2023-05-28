@@ -10,7 +10,7 @@ import { ICandidate } from './interfaces'
 import { EAppointmentsTypes, EMatch } from './enums';
 import { Keywords } from 'src/sppvr/schemas/keywords.schema';
 const { fuzzy } = require('fast-fuzzy');
-const { newLinesToString, newLinesToArray } = require('../helpers')
+const { newLinesToString } = require('../helpers')
 @Injectable()
 export class ReportsService {
     constructor(
@@ -38,26 +38,29 @@ export class ReportsService {
         ])
     }
 
-    async getReport(params):Promise<IReportResponse[]>{
+    async getReport(params):Promise<IReportResponse>{
+
         const reports = []
+        let totalScore = 0
+        let doctorsStat = {}
         const filters = this.getFilters(params)
-
         await this.setKeywords()
- 
-        let { protocols } = await this.getReportDocument(params.fileId, filters)
 
+        let { protocols } = await this.getReportDocument(params.fileId, filters)
+        
         if(!protocols) {
             return null;
         }
 
         let reference = await this.getReferenceDocument(params.filters.code)
-        if(!protocols.length) {
+        if(!reference.length) {
             return null;
         }
-        protocols.forEach( (protocol) =>{
+        
+        protocols.forEach((protocol) =>{
             const fromReference = reference.find( r => r.codes.includes(protocol.code)).appointments.filter( a => a.mandatory.trim() == 'да' && a.type !== EAppointmentsTypes.CONSULTING && a.type !== "Консультации") || []
             const report = []
-
+            
             let { appointments } = protocol
 
             for (let { appointment } of fromReference){
@@ -65,27 +68,45 @@ export class ReportsService {
                 if(!appointments.length) continue;
 
                 let { reference , protocol, match, score } = this.matchAppointment(newLinesToString(appointment).trim(), appointments);
-                
+       
                 if (reference) {
                     report.push({ reference, protocol, match, score });
                     continue
                 }
             }
-
+    
             const allReferences = fromReference.map( r => newLinesToString(r.appointment))
             const matches = report.filter( r => r.protocol !== null)
-            const total = this.getTotalScore(fromReference.length, matches.length)
 
-            reports.push({patient: protocol.patientId, doctor: protocol.doctor, code: protocol.code, report, references: allReferences, appointments, total})
+            const total = this.getTotalScore(allReferences.length, report.length, matches.length)
+            totalScore += total
+            doctorsStat[protocol.doctor] = doctorsStat[protocol.doctor] + 1 || 1
+            reports.push({
+                patient: protocol.patientId, 
+                doctor: protocol.doctor, 
+                diagnosis: protocol.diagnosis,
+                code: protocol.code, 
+                report, 
+                references: allReferences, 
+                appointments, 
+                total
+            })
         })
 
-        return reports 
+        totalScore = totalScore / protocols.length
+        return {
+            total: totalScore,
+            doctorsStat,
+            reports
+            
+        } 
     }
     
     private hasKeywords(fromReference, fromProtocol){
-        const { keywords } = this.keywords.find( k => k.title === fromReference) || {};
+        const  { keywords }  = this.keywords.find( k => k.title === fromReference) || {}
         if (!keywords) return null;
-        return keywords.includes(fromProtocol)
+        const includes = keywords.filter( k => fromProtocol.includes(k));
+        return includes.length == keywords.length ? true : false
     }
 
     private matchAppointment(fromReference, fromProtocol):ICandidate{
@@ -106,7 +127,7 @@ export class ReportsService {
                 continue
             }
 
-            if((a1 > .2 && a2 > .6) || (a2 > .2 && a1 > .6)){
+            if((a1 > .2 && a2 > .7) || (a2 > .2 && a1 > .7)){
                 const max = a1 > a2 ? a1 : a2
                 const min = a2 < a1 ? a2 : a1
                 const match = this.hasKeywords(fromReference, appointment) ? EMatch.PRETTY_CLOSE : EMatch.WARNING
@@ -114,7 +135,7 @@ export class ReportsService {
                     reference: fromReference,
                     protocol: appointment,
                     match: match,
-                    score: max
+                    score: min
                 }
                 continue
             }
@@ -142,8 +163,10 @@ export class ReportsService {
             score: 0
         }
     }
-    private getTotalScore(reference, protocol): string | number{
-        return (protocol / reference)//`${((protocol / reference) * 100).toFixed(0)}%`
+    private getTotalScore(reference, protocol, matches): number{
+        const a = reference / protocol
+        const b = reference / matches
+        return Number((a / b).toFixed(2))
     }
 
     private getFilters(params){
@@ -188,15 +211,5 @@ export class ReportsService {
         const reference = await this.DiagnosisModel.find(filter).exec()
         return reference || []
     }
-    fuzz({a1, a2}){
-        
-        return {
-            a1,
-            a2,
-            a1a2: fuzzy(a1 , a2),
-            a2a1: fuzzy(a2 , a1),
-            includes_a1: a2.toLowerCase().includes(a1.toLowerCase()),
-            includes_a2: a1.toLowerCase().includes(a2.toLowerCase())
-        }
-    }
+ 
 }

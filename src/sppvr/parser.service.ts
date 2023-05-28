@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose'
 import { ExcelService } from 'src/excel';
-import { AppointmentsTypes } from 'src/sppvr/schemas/appointmentsTypes.schema';
 import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
-import { newLinesToArray } from '@helpers/index';
 import { Keywords } from './schemas/keywords.schema';
 @Injectable()
 export class ParserService {
@@ -14,7 +12,6 @@ export class ParserService {
     constructor(
         @InjectModel(Diagnosis.name) private DiagnosisModel: Model<Diagnosis>,
         @InjectModel(Orientation.name) private OrientationModel: Model<Orientation>,
-        @InjectModel(AppointmentsTypes.name) private AppointmentsModel: Model<AppointmentsTypes>,
         @InjectModel(Keywords.name) private KeywordsModel: Model<Keywords>,
        
     ){}
@@ -23,7 +20,6 @@ export class ParserService {
         try{
 
             const orientations = await this.OrientationModel.find().exec();
-            const appointmentsTypes = await this.AppointmentsModel.find().exec();
 
             const diagnosises = []
             let orientationId, diagnosisTitle
@@ -51,7 +47,6 @@ export class ParserService {
                     let type = this.xls.getVal("B" , rowNumber).trim() || "н/д"
                     let appointmentTitle = this.xls.getVal("C" , rowNumber);
                     let mandatory = this.xls.getVal("D" , rowNumber)
-                    // let appointment = appointmentsTypes.find(at => at.title === title)?._id || null
                     appointments.push({
                         number: Number(val),
                         type: type,

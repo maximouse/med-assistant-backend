@@ -5,11 +5,10 @@ import { MulterModule } from '@nestjs/platform-express'
 import { MongooseModule } from '@nestjs/mongoose';
 import { Diagnosis, DiagnosisSchema } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation, OrientationSchema } from 'src/sppvr/schemas/orientation.schema';
-import { AppointmentsTypes, AppointmentsTypesSchema } from 'src/sppvr/schemas/appointmentsTypes.schema';
 import { ExcelModule } from 'src/excel';
 import { UploadProtocolService } from './modules/upload-protocol.service';
 import { Report, ReportSchema } from 'src/reports/schemas/report.schema';
-// import { ReportStatus, ReportStatusSchema } from 'src/reports/schemas/reportStatus.schema';
+
 import { Keywords, KeywordsSchema } from 'src/sppvr/schemas/keywords.schema';
 import { AuthModule } from 'src/auth/auth.module';
 
@@ -21,9 +20,8 @@ import { AuthModule } from 'src/auth/auth.module';
         MongooseModule.forFeature([
             {name: Diagnosis.name, schema: DiagnosisSchema},
             {name: Orientation.name, schema: OrientationSchema},
-            {name: AppointmentsTypes.name, schema: AppointmentsTypesSchema},
+
             {name: Report.name, schema: ReportSchema},
-            // {name: ReportStatus.name, schema: ReportStatusSchema},
             {name: Keywords.name, schema: KeywordsSchema},
           ]),
         ExcelModule,

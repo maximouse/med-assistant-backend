@@ -14,42 +14,8 @@ export class UserService {
     return createdUser.save();
   }
 
-  // async findAll(): Promise<User[]> {
-  //   return this.userModel.find().exec();
-  // }
-
-  // async findOne(_id: string): Promise<User>{
-  //   console.log(typeof _id)
-  //   return this.userModel.findById(_id);
-  // }
-
-  // async findBy(params): Promise<User[]> {
-  //   const match = {...params}
-  //   console.log("match")
-  //   console.log(match)
-  //   return this.userModel.aggregate([
-  //     {
-  //       $match: match 
-  //     },
-  //     {
-  //       $project: {
-  //         name: 1,
-  //         age: 1
-  //       }
-  //     }
-  //   ])
-  // }
   async getUserByEmail(email){
     return this.userModel.findOne({email});
   }
 
-  // async update(_id, data): Promise<User> {
-  //   console.log(_id, data)
-  //   return this.userModel.findOneAndUpdate({_id: _id}, data);
-  // }
-
-  // async remove(_id): Promise<User> {
-  //   console.log(_id)
-  //   return this.userModel.findOneAndUpdate({_id: _id}, { acitve: false });
-  // }
 }

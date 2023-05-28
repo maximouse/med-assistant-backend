@@ -2,15 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose'
 import { ExcelService } from 'src/excel';
-import { AppointmentsTypes } from 'src/sppvr/schemas/appointmentsTypes.schema';
 import { Diagnosis } from 'src/sppvr/schemas/diagnosis.schema';
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 import { Report } from 'src/reports/schemas/report.schema';
-
 import { EReportStatus } from '../enums';
-const { newLinesToArray } = require('../../helpers')
 import { IReport} from '../interfaces'
 import { IUploadProtocolResponse } from '../responses';
+const { newLinesToArray } = require('../../helpers')
 
 @Injectable()
 export class UploadProtocolService {
@@ -19,7 +17,6 @@ export class UploadProtocolService {
     constructor(
         @InjectModel(Diagnosis.name) private DiagnosisModel: Model<Diagnosis>,
         @InjectModel(Orientation.name) private OrientationModel: Model<Orientation>,
-        @InjectModel(AppointmentsTypes.name) private AppointmentsModel: Model<AppointmentsTypes>,
         @InjectModel(Report.name) private ReportModel: Model<Report>,
 
     ){}
@@ -47,7 +44,6 @@ export class UploadProtocolService {
 
         await worksheet.eachRow({includeEmpty: false}, (row, rowNumber) => {
             code = this.ExcelService.getVal("D", rowNumber)
-            console.log(code)
             if( rowNumber !== 1 && codesBase.includes(code)){
                 gender = this.ExcelService.getVal("A", rowNumber)
                 birthday = this.ExcelService.getVal("B", rowNumber)
@@ -73,15 +69,15 @@ export class UploadProtocolService {
                     appointments
                 })
             }
-        });
+        })
         report.status = EReportStatus.READY
-        report.filters = this.getFilters(doctors, diagnosises, dates, codes)
+        report.filters = this.getFilters(diagnosises, doctors, dates, codes)
         this.updateReport({ _id: savedReport._id}, report)
 
         return  { fileId: report.fileId, status: report.status }
     }
     private async updateReport( _id, update){
-        return await this.ReportModel.updateOne({ _id: _id}, update)
+        await this.ReportModel.updateOne({ _id: _id}, update)
     }
 
     private getFilters(diagnosis, doctors, dates, codes):any{

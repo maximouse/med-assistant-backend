@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
-// import { AppointmentsTypesSchema, AppointmentsTypes } from './appointmentsTypes.schema'
-// import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 export type DiagnosisDocument = HydratedDocument<Diagnosis>;
 // NESTED //
 @Schema({_id: false})
@@ -29,7 +27,6 @@ export class Diagnosis {
     title: string;
 
     @Prop({required: true, ref: "Orientation"})
-    // @Prop()
     orientation: mongoose.Types.ObjectId
 
     @Prop({required: true, default: null})

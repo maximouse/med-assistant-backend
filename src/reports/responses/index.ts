@@ -24,7 +24,9 @@ export class IAllReportsResponse  {
     }
 }
 
-export class IReportResponse  {
+
+
+export class ISubReport {
 
     @ApiProperty({example: "47"})
     patient: string;
@@ -56,6 +58,15 @@ export class IReportResponse  {
         appointments: Array<string>;
         total: number;
     }
+}
+
+export class IReportResponse {
+    reports: Array<ISubReport>
+
+    @ApiProperty({example: 100})
+    total: number
+
+    doctorsStat: any
 }
 
 export class IUploadProtocolResponse {
