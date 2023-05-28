@@ -50,7 +50,6 @@ export class ReportsService {
             return null;
         }
 
-        // let reference = await this.DiagnosisModel.find({codes: { $in: [...params.filters.code]}}).exec()
         let reference = await this.getReferenceDocument(params.filters.code)
         if(!protocols.length) {
             return null;

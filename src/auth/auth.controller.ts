@@ -11,7 +11,7 @@ export class AuthController {
     constructor(private authService: AuthService) {}
 
     @Post('/login')
-    @ApiOperation({summary: "Получить отчет"})
+    @ApiOperation({summary: "Получить JWT, используя email и пароль"})
     @ApiOkResponse({type: IAuthResponse})
     login(@Body() authDto: CreateAuthDto):Promise<IAuthResponse> {
         return this.authService.login(authDto)
