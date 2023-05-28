@@ -37,7 +37,7 @@ export class UploadProtocolService {
             fileName: file.originalname,
             status: EReportStatus.PROCESSING,
             protocols: [],
-            filters: []
+            filters: {}
         }
 
         const savedReport = await this.ReportModel.create(report);
@@ -84,13 +84,14 @@ export class UploadProtocolService {
         return await this.ReportModel.updateOne({ _id: _id}, update)
     }
 
-    private getFilters(diagnosis, doctors, dates, codes):Array<any>{
-        return [
-            {diagnosis: diagnosis.size ? [...diagnosis] : null},
-            {doctors: doctors.size ? [...doctors] : null},
-            {dates: dates.size ? [...dates] : null},
-            {codes: codes.size ? [...codes] : null}
-        ]
+    private getFilters(diagnosis, doctors, dates, codes):any{
+        return {
+            diagnosis: diagnosis.size ? [...diagnosis] : null,
+            doctors: doctors.size ? [...doctors] : null,
+            dates: dates.size ? [...dates] : null,
+            codes: codes.size ? [...codes] : null
+        }
+        
     }
     async getDiagnosisCodes():Promise<Array<any>>{
         return await this.DiagnosisModel.aggregate([

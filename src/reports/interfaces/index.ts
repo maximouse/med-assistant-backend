@@ -12,5 +12,5 @@ export interface IReport {
     fileName: string,
     status: string,
     protocols: Array<any>,
-    filters: Array<any>
+    filters: any
 }

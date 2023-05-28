@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Date, HydratedDocument, ObjectId } from 'mongoose';
-import { ReportStatusSchema } from './reportStatus.schema';
+
 import { Orientation } from 'src/sppvr/schemas/orientation.schema';
 export type ReportDocument = HydratedDocument<Report>;
 // NESTED //
@@ -34,6 +34,10 @@ export class Protocol {
 
 export const ProtocolSchema = SchemaFactory.createForClass(Protocol);
 
+class Filters{
+
+}
+
 // MAIN //
 @Schema({timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }})
 export class Report {
@@ -49,8 +53,8 @@ export class Report {
     @Prop({type: [ProtocolSchema]})
     protocols: Array<Protocol>;
 
-    @Prop()
-    filters: Array<any>;
+    @Prop({type: Object})
+    filters: any;
 
 }
 
